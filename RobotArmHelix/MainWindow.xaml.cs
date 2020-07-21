@@ -17,7 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using System.IO;
-
+using System.Windows.Threading;
 
 /**
  * Author: Gabriele Marini (Gabryxx7)
@@ -79,6 +79,7 @@ namespace RobotArmHelix
         Vector3D reachingPoint;
         int movements = 10;
         System.Windows.Forms.Timer timer1;
+        private Joystick joystick;
 
 #if IRB6700
         //directroy of all stl files
@@ -171,6 +172,27 @@ namespace RobotArmHelix
             timer1 = new System.Windows.Forms.Timer();
             timer1.Interval = 5;
             timer1.Tick += new System.EventHandler(timer1_Tick);
+
+            joystick = new Joystick();
+            joystick.JoyStickDataReceived += Joystick_JoyStickDataReceived;
+            joystick.start("Logitech Extreme 3D");
+        }
+        delegate void JoystickDataReceived(JoystickData data);
+        private void Joystick_JoyStickDataReceived(object sender, JoystickData e)
+        {
+            CallJoystickAction(e);
+        }
+
+        private void CallJoystickAction(JoystickData e)
+        {
+            if (!CheckAccess())
+            {
+                this.Dispatcher.BeginInvoke(new JoystickDataReceived(CallJoystickAction), e);
+                return;
+            }
+            joint2.Value = e.channel1;
+            joint3.Value = -e.channel1;
+            joint1.Value = e.channel2;
         }
 
         private Model3DGroup Initialize_Environment(List<string> modelsNames)
@@ -468,6 +490,8 @@ namespace RobotArmHelix
             F.Children.Add(joints[sel].model.Transform);
             geom.Transform = F;
         }
+
+
 
         private void joint_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
