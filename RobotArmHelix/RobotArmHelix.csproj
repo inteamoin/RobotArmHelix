@@ -79,6 +79,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ControlServer.cs" />
     <Compile Include="Joystick.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -104,37 +105,99 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="3D_Models\IRB4600_20kg-250_BASE_CAD_rev04.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_CABLES_LINK1_rev03.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_CABLES_LINK2_rev03.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_CABLES_LINK3_rev03.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_LINK1_CAD_rev04.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_LINK2_CAD_rev04.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_LINK3_CAD_rev005.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_LINK3_CAD_rev04.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_LINK4_CAD_rev04.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_LINK5_CAD_rev04.stl" />
-    <None Include="3D_Models\IRB4600_20kg-250_LINK6_CAD_rev04.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_CYLINDER_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK02m_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK02_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK02_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK03a_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK03b_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LOGO1_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LOGO2_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LOGO3_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_ROD_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_BASE_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK04_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK04_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK05_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK06_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK01m_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK01_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK01_CAD.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK03m_CABLE.stl" />
-    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK03_CAD.stl" />
+    <None Include="3D_Models\IRB4600_20kg-250_BASE_CAD_rev04.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_CABLES_LINK1_rev03.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_CABLES_LINK2_rev03.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_CABLES_LINK3_rev03.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_LINK1_CAD_rev04.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_LINK2_CAD_rev04.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_LINK3_CAD_rev005.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_LINK3_CAD_rev04.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_LINK4_CAD_rev04.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_LINK5_CAD_rev04.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB4600_20kg-250_LINK6_CAD_rev04.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_CYLINDER_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK02m_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK02_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK02_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK03a_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LINK03b_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LOGO1_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LOGO2_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_LOGO3_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev00_ROD_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_BASE_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK04_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK04_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK05_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev01_LINK06_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK01m_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK01_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK01_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK03m_CABLE.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="3D_Models\IRB6700-MH3_245-300_IRC5_rev02_LINK03_CAD.stl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -150,6 +213,9 @@
     <Content Include="lib\HelixToolkit.pdb" />
     <Content Include="lib\HelixToolkit.Wpf.dll" />
     <Content Include="lib\HelixToolkit.Wpf.pdb" />
+    <Content Include="index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

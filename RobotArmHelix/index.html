@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<title> Aries </title>
+<html>
+<head>
+    <fieldset><center><img src="Aries.png">
+</head>
+<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="icon" href="data:,">
+    <style>
+        body {
+            text-align: center;
+            font-family: "Trebuchet MS", Arial;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .slider {
+            width: 300px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script></head><body>
+    <h1 style="color:red;">Robotic ARM Control</h1>
+    <p style="color:green;">GRIPPER: <span id="GRIPP"></span></p>  
+    <input type="range" min="0" max="100" value="50" class="slider" id="GRIPPER" oninput="grip(this.value)" /><br />  
+    <p style="color:green;">WRIST: <span id="WRIST"></span></p>  
+    <input type="range" min="0" max="100" value="50" class="slider" id="WRIST JOINT" oninput="wrist(this.value)" /><br />  
+    <p style="color:green;">ELBOW: <span id="ELBOW"></span></p>  
+    <input type="range" min="0" max="180" value="0" class="slider" id="ELBOW JOINT" oninput="elbow(this.value)" /><br />  
+    <p style="color:green;">SHOULDER: <span id="SHOULDE"></span></p>  
+    <input type="range" min="0" max="180" value="0" class="slider" id="SHOULDER" oninput="shoulder(this.value)" /><br />  
+    <p style="color:green;">BASE: <span id="BAS"></span></p>  
+    <input type="range" min="0" max="360" value="0" class="slider" id="BASE" oninput="base(this.value)" /><br /> 
+    <p style="color:green;">Composite: <span id="COMP"></span></p>      
+    <input type="range" min="-180" max="180" value="0" class="slider" id="COMPOSITE" oninput="composite(this.value)" onmouseup="mouseup()" />
+    <br />  
+    <div class="displayobject">
+    <h4>Weight: <span id="weight">0</span>kg</h4>       <h4>Pressure: <span id="pressure">0</span>hpa</h4>       <h4>Feedback pos: <span id="feedback">0</span>&deg</h4><br>
+</div>
+    <script>
+        var slider1 = document.getElementById("GRIPPER");
+        var servoP1 = document.getElementById("GRIPP");
+        servoP1.innerHTML = slider1.value; slider1.onchange = function () {
+            slider1.value = this.value; servoP1.innerHTML = this.value;
+        }
+        function grip(pos) {
+            $.get("/?grip=" + pos + "&"); { Connection: close };
+        }
+        var slider2 = document.getElementById("WRIST JOINT");
+        var servoP2 = document.getElementById("WRIST");
+        servoP2.innerHTML = slider2.value;
+        slider2.onchange = function () {
+            slider2.value = this.value; servoP2.innerHTML = this.value;
+        }
+        function wrist(pos) {
+            $.get("/?wrist=" + pos + "&"); { Connection: close };
+        }
+        var slider3 = document.getElementById("ELBOW JOINT");
+        var servoP3 = document.getElementById("ELBOW");
+        servoP3.innerHTML = slider3.value;
+        slider3.onchange = function () {
+            slider3.value = this.value; servoP3.innerHTML = this.value;
+        }
+        function elbow(pos) {
+            $.get("/?elbow=" + pos + "&"); { Connection: close };
+        }
+        var slider4 = document.getElementById("SHOULDER");
+        var servoP4 = document.getElementById("SHOULDE");
+        servoP4.innerHTML = slider4.value;
+        slider4.onchange = function () {
+            slider4.value = this.value; servoP4.innerHTML = this.value;
+        }
+        function shoulder(pos) {
+            $.get("/?shoulder=" + pos + "&"); { Connection: close };
+        }
+        var slider5 = document.getElementById("BASE");
+        var servoP5 = document.getElementById("BAS");
+        servoP5.innerHTML = slider5.value;
+        slider5.onchange = function () {
+            slider5.value = this.value; servoP5.innerHTML = this.value;
+        }
+        function base(pos) {
+            $.get("/?base=" + pos + "&"); { Connection: close };
+        }
+         var slider6 = document.getElementById("COMPOSITE");
+        var servoP6 = document.getElementById("COMP");
+        servoP6.innerHTML = slider4.value;
+        slider6.onchange = function () {
+            slider6.value = this.value; servoP6.innerHTML = this.value;
+        }
+        var isDraggingComposite = false;
+        function composite(pos) {
+            //if (Math.abs(pos) < 0) return;
+            isDraggingComposite = true;
+            $.get("/?shoulder=" + pos + "&" + "elbow=-" + pos + "&"); { Connection: close };
+        }
+
+        function mouseup() {
+            if (isDraggingComposite) {
+                isDraggingComposite = false;
+                slider6.value = pos; servoP6.innerHTML = pos;
+                return;
+            }
+        }
+
+    </script>
+    <!--<script>
+        setInterval(function () {
+            getSensorData();
+        }, 1000);
+        function getSensorData() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) { document.getElementById("weight").innerHTML = this.responseText; }
+            };
+            xhttp.open("GET", "weightread", true);
+            xhttp.send();
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) { document.getElementById("pressure").innerHTML = this.responseText; }
+            };
+            xhttp.open("GET", "pressureread", true);
+            xhttp.send();
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) { document.getElementById("feedback").innerHTML = this.responseText; }
+            };
+            xhttp.open("GET", "feedbackread", true);
+            xhttp.send();
+        }</script>-->
+</body>
+</html>

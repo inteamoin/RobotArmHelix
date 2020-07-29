@@ -31,7 +31,7 @@ namespace RobotArmHelix
         string joystickconfigaxis = "joystickaxis.xml";
 
         // set to default midpoint
-        int hat1 = 65535 / 2;
+        int hat1 = 0;//= 65535 / 2;
         int hat2 = 65535 / 2;
         int custom0 = 65535 / 2;
         int custom1 = 65535 / 2;
@@ -249,14 +249,19 @@ namespace RobotArmHelix
                     expo = 0,
                     reverse = false
                 };
-
-                JoyChannels[1].axis = joystickaxis.Y;
-                JoyChannels[1].reverse = true;
-
-                JoyChannels[2].axis = joystickaxis.X;
-                JoyChannels[2].reverse = true;
-
             }
+            
+            JoyChannels[1].axis = joystickaxis.Y;
+            JoyChannels[1].reverse = true;
+
+            JoyChannels[2].axis = joystickaxis.X;
+            JoyChannels[2].reverse = true;
+
+            JoyButtons[0].buttonno = 0;
+            JoyButtons[2].buttonno = 2;
+            JoyButtons[3].buttonno = 3;
+            JoyButtons[4].buttonno = 4;
+            JoyButtons[5].buttonno = 5;
 
         }
 
@@ -283,6 +288,7 @@ namespace RobotArmHelix
 
         JoyChannel[] JoyChannels = new JoyChannel[20]; // we are base 1
         JoyButton[] JoyButtons = new JoyButton[128]; // base 0
+        private JoystickData previous;
 
         public static IList<DeviceInstance> getDevices()
         {
@@ -558,9 +564,11 @@ namespace RobotArmHelix
         /// </summary>
         void mainloop()
         {
+            bool saveState = false;
             while (enabled && joystick != null && !joystick.IsDisposed)
             {
                 JoystickData jdata = new JoystickData();
+                short hat = 0;
                 try
                 {
                     System.Threading.Thread.Sleep(50);
@@ -569,9 +577,13 @@ namespace RobotArmHelix
                     //joystick stuff
                     joystick.Poll();
                     state = joystick.CurrentJoystickState();
+                    if (isButtonPressed(0))
+                    {
+                        saveState = !saveState;
+                    }
 
                     //Console.WriteLine(state);
-
+                    
                     if (getNumberPOV() > 0)
                     {
                         int pov = getHatSwitchDirection();
@@ -585,16 +597,16 @@ namespace RobotArmHelix
 
                             // 0
                             if (angle > 270 || angle < 90)
-                                hat1 += 500;
+                                hat = 180;
                             // 180
                             if (angle > 90 && angle < 270)
-                                hat1 -= 500;
-                            // 90
-                            if (angle > 0 && angle < 180)
-                                hat2 += 500;
-                            // 270
-                            if (angle > 180 && angle < 360)
-                                hat2 -= 500;
+                                hat = -180;
+                            //// 90
+                            //if (angle > 0 && angle < 180)
+                            //    hat2 += 500;
+                            //// 270
+                            //if (angle > 180 && angle < 360)
+                            //    hat2 -= 500;
                         }
                     }
 
@@ -658,10 +670,26 @@ namespace RobotArmHelix
                     if (getJoystickAxis(17) != Joystick.joystickaxis.None) jdata.channel17 = pickchannel(17, JoyChannels[17].axis, JoyChannels[17].reverse, JoyChannels[17].expo);
                     if (getJoystickAxis(18) != Joystick.joystickaxis.None) jdata.channel18 = pickchannel(18, JoyChannels[18].axis, JoyChannels[18].reverse, JoyChannels[18].expo);
 
-
+                    jdata.hat = hat;
+                    jdata.buttonGripPressed = isButtonPressed(5);
+                    jdata.buttonElbowPressed = isButtonPressed(3);
+                    jdata.buttonSholderPressed = isButtonPressed(2);
+                    jdata.buttonWristPressed = isButtonPressed(4);
+                    if (
+                        ((jdata.buttonElbowPressed && Math.Abs(jdata.channel1) > Math.Abs(previous?.channel1 ?? 0)) 
+                        || (jdata.buttonElbowPressed && Math.Abs(jdata.channel1) > Math.Abs(previous?.channel1 ?? 0))
+                        || (jdata.buttonSholderPressed && Math.Abs(jdata.channel1) > Math.Abs(previous?.channel1 ?? 0)) 
+                        || (jdata.buttonWristPressed && Math.Abs(jdata.channel1) > Math.Abs(previous?.channel1 ?? 0)))
+                        && saveState)
+                        saveState = false;
+                    jdata.saveState = saveState;
+                    //Console.WriteLine(jdata.ToString());
                     //DoJoystickButtonFunction();
-                    
-                    JoyStickDataReceived?.Invoke(this, jdata);
+                    //if (!saveState)
+                    //{
+                        JoyStickDataReceived?.Invoke(this, jdata);
+                        previous = jdata;
+                    //}
                     //Console.WriteLine("{0} {1} {2} {3}", jdata.channel1, jdata.channel2, jdata.channel3, jdata.channel4);
                 }
                 catch (SharpDX.SharpDXException ex)
@@ -1566,5 +1594,34 @@ namespace RobotArmHelix
         internal short channel16;
         internal short channel17;
         internal short channel18;
+        internal bool buttonGripPressed;
+        internal bool buttonElbowPressed;
+        internal bool buttonSholderPressed;
+        internal bool buttonWristPressed;
+        internal bool saveState;
+        internal short hat;
+
+        public override string ToString()
+        {
+            return
+            $"Channel1: {channel1} |" +
+            $"Channel2: {channel2} |" +
+            $"Channel3: {channel3} |" +
+            $"Channel4: {channel4} |" +
+            $"Channel5: {channel5} |" +
+            $"Channel6: {channel6} |" +
+            $"Channel7: {channel7} |" +
+            $"Channel8: {channel8} |" +
+            $"Channel9: {channel9} |" +
+            $"Channel10: {channel10} |" +
+            $"Channel11: {channel11} |" +
+            $"Channel12: {channel12} |" +
+            $"Channel13: {channel13} |" +
+            $"Channel14: {channel14} |" +
+            $"Channel15: {channel15} |" +
+            $"Channel16: {channel16} |" +
+            $"Channel17: {channel17} |" +
+            $"Channel18: {channel18}"; 
+        }
     }
 }

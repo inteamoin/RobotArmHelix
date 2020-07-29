@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using HelixToolkit.Wpf;
 using System.IO;
 using System.Windows.Threading;
+using System.Reflection;
 
 /**
  * Author: Gabriele Marini (Gabryxx7)
@@ -29,9 +30,9 @@ namespace RobotArmHelix
     class Joint
     {
         public Model3D model = null;
-        public double angle = 0;
-        public double angleMin = -180;
-        public double angleMax = 180;
+        public double angle = 50;
+        public double angleMin =0;
+        public double angleMax = 100;
         public int rotPointX = 0;
         public int rotPointY = 0;
         public int rotPointZ = 0;
@@ -122,7 +123,7 @@ namespace RobotArmHelix
         public MainWindow()
         {
             InitializeComponent();
-            basePath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\3D_Models\\";
+            basePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\3D_Models\\";
             List<string> modelsNames = new List<string>();
             modelsNames.Add(MODEL_PATH1);
             modelsNames.Add(MODEL_PATH2);
@@ -173,15 +174,21 @@ namespace RobotArmHelix
             timer1.Interval = 5;
             timer1.Tick += new System.EventHandler(timer1_Tick);
 
-            joystick = new Joystick();
-            joystick.JoyStickDataReceived += Joystick_JoyStickDataReceived;
-            joystick.start("Logitech Extreme 3D");
+            //joystick = new Joystick();
+            //joystick.JoyStickDataReceived += Joystick_JoyStickDataReceived;
+            //joystick.start("Logitech Extreme 3D");
+
+            server = new ControlServer();
+            server.JoyStickDataReceived += Joystick_JoyStickDataReceived;
         }
         delegate void JoystickDataReceived(JoystickData data);
         private void Joystick_JoyStickDataReceived(object sender, JoystickData e)
         {
             CallJoystickAction(e);
         }
+        int increment = 1;
+        int threshold = 10;
+        private ControlServer server;
 
         private void CallJoystickAction(JoystickData e)
         {
@@ -190,9 +197,61 @@ namespace RobotArmHelix
                 this.Dispatcher.BeginInvoke(new JoystickDataReceived(CallJoystickAction), e);
                 return;
             }
-            joint2.Value = e.channel1;
-            joint3.Value = -e.channel1;
-            joint1.Value = e.channel2;
+            if (chbx_SliderControl.IsChecked ?? false) return;
+          
+            if(e.buttonGripPressed)
+            {
+                CalculateJointAngle(joint6, e.channel1);
+                return;
+            }
+            if (e.buttonSholderPressed)
+            {
+                CalculateJointAngle(joint2, e.channel1);
+                return;
+            }
+            if (e.buttonElbowPressed)
+            {
+                CalculateJointAngle(joint3, e.channel1);
+                return;
+            }
+            if (e.buttonWristPressed)
+            {
+                CalculateJointAngle(joint5, e.channel1);
+                return;
+            }
+            if(Math.Abs(e.hat) > threshold)
+            {
+                CalculateJointAngle(joint4, e.hat);
+            }
+
+            if (Math.Abs(e.channel2) > threshold)
+                CalculateJointAngle(joint1, e.channel2);
+
+            if (Math.Abs(e.channel1) > threshold)
+            {
+                if(e.channel1 > threshold)
+                {
+                    joint2.Value += increment;
+                    joint3.Value -= increment;
+                }
+                else if(e.channel1 < 0 - threshold)
+                {
+                    joint2.Value -= increment;
+                    joint3.Value += increment;
+                }
+
+            }
+
+            if(Math.Abs(e.hat) > threshold)
+            {
+
+            }
+            
+        }
+
+        private void CalculateJointAngle(Slider joint, short channel)
+        {
+            joint.Value = channel > threshold ? joint.Value + increment : (channel < 0 - threshold ? joint.Value - increment : joint.Value);
         }
 
         private Model3DGroup Initialize_Environment(List<string> modelsNames)
