@@ -187,7 +187,10 @@ namespace RobotArmHelix
             CallJoystickAction(e);
         }
         int increment = 1;
-        int threshold = 10;
+        int trim = 50;
+        int deadStickMin =40;
+        int deadStickMax = 60;
+
         private ControlServer server;
 
         private void CallJoystickAction(JoystickData e)
@@ -219,39 +222,29 @@ namespace RobotArmHelix
                 CalculateJointAngle(joint5, e.channel1);
                 return;
             }
-            if(Math.Abs(e.hat) > threshold)
+            if(e.hat != trim)
             {
                 CalculateJointAngle(joint4, e.hat);
             }
 
-            if (Math.Abs(e.channel2) > threshold)
-                CalculateJointAngle(joint1, e.channel2);
+            short channel2 = e.channel2;
+            if (e.channel2 < deadStickMax && e.channel2 > deadStickMin)
+                channel2 = (short)trim;    
+            CalculateJointAngle(joint1, channel2);
 
-            if (Math.Abs(e.channel1) > threshold)
-            {
-                if(e.channel1 > threshold)
-                {
-                    joint2.Value += increment;
-                    joint3.Value -= increment;
-                }
-                else if(e.channel1 < 0 - threshold)
-                {
-                    joint2.Value -= increment;
-                    joint3.Value += increment;
-                }
+            var channel1 = e.channel1;
+            if (e.channel1 < deadStickMax && e.channel1 > deadStickMin)
+                channel1 = (short)trim;
 
-            }
-
-            if(Math.Abs(e.hat) > threshold)
-            {
-
-            }
+            var elbowAngle = 100 - channel1;
+            CalculateJointAngle(joint2, channel1);
+            CalculateJointAngle(joint3, (short)elbowAngle);
             
         }
 
         private void CalculateJointAngle(Slider joint, short channel)
         {
-            joint.Value = channel > threshold ? joint.Value + increment : (channel < 0 - threshold ? joint.Value - increment : joint.Value);
+            joint.Value = channel > trim ? joint.Value + increment : (channel < trim? joint.Value - increment : joint.Value);
         }
 
         private Model3DGroup Initialize_Environment(List<string> modelsNames)
@@ -554,7 +547,7 @@ namespace RobotArmHelix
 
         private void joint_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (isAnimating)
+            if (isAnimating || joints == null)
                 return;
 
             joints[0].angle = joint1.Value;
